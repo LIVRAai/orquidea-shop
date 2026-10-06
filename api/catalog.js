@@ -65,7 +65,9 @@ async function fetchSheet() {
 export default async function handler(req, res) {
   try {
     const products = await fetchSheet();
-    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.setHeader('CDN-Cache-Control', 'no-store');
+    res.setHeader('Vercel-CDN-Cache-Control', 'no-store');
     return res.status(200).json({
       ok: true,
       source: 'google-sheets',

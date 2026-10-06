@@ -46,4 +46,5 @@ $('#q').oninput=e=>{q=e.target.value.toLowerCase();lim=10;renderGrid()};
 $('#moreBtn').onclick=()=>{lim+=10;renderGrid()};
 $('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
 setTimeout(showWelcome,380);
+window.addEventListener('focus',()=>sync());
 renderAll();sync();

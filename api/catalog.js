@@ -15,21 +15,33 @@ const normalizeRows = (payload) => {
         ? payload.data
         : [];
 
+  const pick = (row, ...keys) => {
+    for (const key of keys) {
+      if (row?.[key] !== undefined && row?.[key] !== null && String(row[key]).trim() !== '') {
+        return row[key];
+      }
+    }
+    return '';
+  };
+
   return rows
-    .filter((row) => truthy(row.estado))
+    .filter((row) => truthy(pick(row, 'estado', 'Estado', 'ESTADO')))
     .map((row) => ({
-      nombre: String(row.nombre ?? '').trim(),
-      descripcion: String(row.descripcion ?? '').trim(),
-      tallas: String(row.tallas ?? '').trim(),
-      precio: String(row.precio ?? '').trim(),
-      categoria: String(row.categoria ?? 'Sin categoría').trim(),
+      nombre: String(pick(row, 'nombre', 'Nombre')).trim(),
+      descripcion: String(pick(row, 'descripcion', 'Descripción', 'Descripcion')).trim(),
+      tallas: String(pick(row, 'tallas', 'Tallas')).trim(),
+      precio: String(pick(row, 'precio', 'Precio')).trim(),
+      categoria: String(pick(row, 'categoria', 'Categoria', 'Categoría') || 'Sin categoría').trim(),
       imagen_catalogo: String(
-        row.imagen_catalogo ?? row.imagen ?? row.enlace_imagen ?? row.enlaceImagen ?? ''
+        pick(row, 'imagen_catalogo', 'imagenCatalogo', 'Imagen Catalogo', 'Imagen Catálogo')
       ).trim(),
-      destacado: truthy(row.destacado),
+      enlace_imagen: String(
+        pick(row, 'enlace_imagen', 'enlaceImagen', 'Enlace Imagen', 'imagen', 'Imagen')
+      ).trim(),
+      destacado: truthy(pick(row, 'destacado', 'Destacado')),
       estado: true,
     }))
-    .filter((row) => row.nombre && row.imagen_catalogo);
+    .filter((row) => row.nombre && (row.imagen_catalogo || row.enlace_imagen));
 };
 
 async function fetchSheet() {

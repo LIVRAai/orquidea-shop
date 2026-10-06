@@ -39,6 +39,7 @@ const normalizeRows = (payload) => {
         pick(row, 'enlace_imagen', 'enlaceImagen', 'Enlace Imagen', 'imagen', 'Imagen')
       ).trim(),
       destacado: truthy(pick(row, 'destacado', 'Destacado')),
+      portada: truthy(pick(row, 'portada', 'Portada')),
       estado: true,
     }))
     .filter((row) => row.nombre && (row.imagen_catalogo || row.enlace_imagen));

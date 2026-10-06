@@ -1,4 +1,6 @@
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyy3xtsPrUmFBIsiD4k4lCS8Y2keMjERdKVoI-gV1rAmDgqxs6rEKN8CESlmwLxKs7x/exec';
+let lastGoodProducts = null;
+let lastGoodAt = 0;
 
 const truthy = (value) => {
   if (value === true) return true;
@@ -65,26 +67,28 @@ async function fetchSheetAttempt(timeoutMs = 12000) {
 }
 
 async function fetchSheet() {
-  let lastError;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    try {
-      const rows = await fetchSheetAttempt(12000);
-      if (!rows.length) throw new Error('Apps Script devolvió un catálogo vacío');
-      return rows;
-    } catch (error) {
-      lastError = error;
-      if (attempt === 0) await sleep(350);
-    }
-  }
-  throw lastError;
+  const rows = await fetchSheetAttempt(18000);
+  if (!rows.length) throw new Error('Apps Script devolvió un catálogo vacío');
+  return rows;
 }
 
 export default async function handler(req, res) {
+  const fresh = String(req.query?.fresh || '') === '1';
   try {
     const products = await fetchSheet();
-    res.setHeader('Cache-Control', 'no-store, max-age=0');
-    res.setHeader('CDN-Cache-Control', 'no-store');
-    res.setHeader('Vercel-CDN-Cache-Control', 'no-store');
+    lastGoodProducts = products;
+    lastGoodAt = Date.now();
+
+    if (fresh) {
+      res.setHeader('Cache-Control', 'no-store, max-age=0');
+      res.setHeader('CDN-Cache-Control', 'no-store');
+      res.setHeader('Vercel-CDN-Cache-Control', 'no-store');
+    } else {
+      res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=12, stale-while-revalidate=180');
+      res.setHeader('CDN-Cache-Control', 'public, s-maxage=12, stale-while-revalidate=180');
+      res.setHeader('Vercel-CDN-Cache-Control', 'public, s-maxage=12, stale-while-revalidate=180');
+    }
+
     return res.status(200).json({
       ok: true,
       source: 'google-sheets',
@@ -92,6 +96,17 @@ export default async function handler(req, res) {
       updatedAt: new Date().toISOString(),
     });
   } catch (error) {
+    if (lastGoodProducts?.length) {
+      res.setHeader('Cache-Control', 'no-store, max-age=0');
+      return res.status(200).json({
+        ok: true,
+        source: 'last-good',
+        products: lastGoodProducts,
+        updatedAt: lastGoodAt ? new Date(lastGoodAt).toISOString() : null,
+        degraded: true,
+      });
+    }
+
     res.setHeader('Cache-Control', 'no-store');
     return res.status(503).json({
       ok: false,

@@ -45,9 +45,11 @@ const normalizeRows = (payload) => {
     .filter((row) => row.nombre && (row.imagen_catalogo || row.enlace_imagen));
 };
 
-async function fetchSheet() {
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function fetchSheetAttempt(timeoutMs = 12000) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 7000);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const response = await fetch(APPS_SCRIPT_URL, {
       redirect: 'follow',
@@ -60,6 +62,21 @@ async function fetchSheet() {
   } finally {
     clearTimeout(timeout);
   }
+}
+
+async function fetchSheet() {
+  let lastError;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const rows = await fetchSheetAttempt(12000);
+      if (!rows.length) throw new Error('Apps Script devolvió un catálogo vacío');
+      return rows;
+    } catch (error) {
+      lastError = error;
+      if (attempt === 0) await sleep(350);
+    }
+  }
+  throw lastError;
 }
 
 export default async function handler(req, res) {

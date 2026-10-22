@@ -102,3 +102,195 @@ html.theme-halloween .wa-float{border-color:#e4bdd0}
   html.theme-halloween .fc img,html.theme-halloween .pi img{transition:none!important}
   html.theme-halloween .fc:hover img,html.theme-halloween .pi:hover img{transform:none!important}
 }
+
+/* Halloween invitation + Instagram reel — welcome popup only.
+   Reel is loaded on visitor action; original modal is unchanged off season. */
+html.theme-halloween .welcome-overlay .welcome-orbit{display:none}
+html.theme-halloween .welcome-overlay .welcome-card{
+  width:min(980px,96vw);
+  min-height:0;
+  max-height:calc(100vh - 30px);
+  max-height:calc(100dvh - 30px);
+  padding:38px 54px 42px;
+  grid-template-columns:minmax(290px,.85fr) minmax(0,1.15fr);
+  gap:44px;
+  align-items:center;
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:#bf91a3 transparent;
+}
+html.theme-halloween .welcome-overlay .welcome-copy h2{
+  font-size:clamp(48px,5.6vw,69px);
+}
+html.theme-halloween .welcome-overlay .welcome-value{
+  margin-top:24px;
+  font-size:clamp(17px,1.7vw,20px);
+  line-height:1.55;
+  color:#4a293e;
+}
+html.theme-halloween .welcome-overlay .welcome-value strong{
+  color:#a54c36;
+  font-weight:600;
+}
+html.theme-halloween .welcome-overlay .welcome-sub{
+  font-size:12px;
+  max-width:420px;
+  line-height:1.75;
+}
+html.theme-halloween .welcome-overlay .welcome-actions{
+  flex-wrap:wrap;
+  margin-top:25px;
+}
+html.theme-halloween .welcome-overlay .welcome-reel{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  position:relative;
+  z-index:3;
+  min-width:0;
+}
+html.theme-halloween .welcome-overlay .welcome-reel-frame{
+  width:100%;
+  max-width:310px;
+  height:min(425px,59vh);
+  min-height:330px;
+  border-radius:27px;
+  overflow:hidden;
+  background:#2f1c2c;
+  border:5px solid #fff8f4;
+  box-shadow:0 22px 55px #2c142a55,0 0 0 1px #af6b6936;
+  position:relative;
+}
+html.theme-halloween .welcome-overlay .welcome-reel-frame iframe{
+  display:block;
+  width:100%;
+  height:100%;
+  border:0;
+  background:#fff;
+}
+html.theme-halloween .welcome-overlay .welcome-reel-poster{
+  height:100%;
+  width:100%;
+  padding:24px 23px 22px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:space-between;
+  text-align:center;
+  color:#fff4eb;
+  background:
+    radial-gradient(ellipse at 50% 29%,#e5a07655,transparent 46%),
+    radial-gradient(ellipse at 12% 85%,#9b537052,transparent 45%),
+    linear-gradient(160deg,#301b2e 0%,#603344 56%,#2b192e 100%);
+}
+html.theme-halloween .reel-poster-eyebrow{
+  font-size:8px;
+  font-weight:600;
+  letter-spacing:.22em;
+  color:#f1c5b3;
+}
+html.theme-halloween .reel-poster-moon{
+  font:114px/1 'Italiana',serif;
+  color:#f4c5a4;
+  text-shadow:0 0 44px #d5a07e8c;
+  margin:4px 0 -8px;
+}
+html.theme-halloween .reel-poster-title{
+  max-width:230px;
+  font:26px/1.07 'Italiana',serif;
+  letter-spacing:.01em;
+}
+html.theme-halloween .reel-play-button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  border:1px solid #ffe4d1;
+  background:#fff3e9;
+  color:#392135;
+  border-radius:999px;
+  padding:12px 19px;
+  cursor:pointer;
+  font-size:11px;
+  font-weight:600;
+  box-shadow:0 10px 22px #21122445;
+  transition:transform .2s ease,background .2s ease;
+}
+html.theme-halloween .reel-play-button:hover{
+  transform:translateY(-2px);
+  background:white;
+}
+html.theme-halloween .reel-play-button:focus-visible{
+  outline:3px solid #f6aa77;
+  outline-offset:3px;
+}
+html.theme-halloween .reel-play-icon{font-size:12px;color:#9f4d38}
+html.theme-halloween .reel-poster-note{
+  font-size:8px;
+  color:#e8c6cf;
+  letter-spacing:.04em;
+}
+html.theme-halloween .welcome-overlay .welcome-reel-link{
+  display:inline-block;
+  color:#684451;
+  font-size:10px;
+  text-decoration:underline;
+  text-underline-offset:4px;
+}
+html.theme-halloween .welcome-overlay .welcome-reel-link:hover{color:#a34a34}
+@media(max-width:850px){
+  html.theme-halloween .welcome-overlay .welcome-card{
+    padding:38px 35px 40px;
+    grid-template-columns:minmax(230px,.85fr) minmax(0,1.15fr);
+    gap:28px;
+  }
+  html.theme-halloween .welcome-overlay .welcome-reel-frame{
+    max-width:290px;
+    height:min(390px,56vh);
+  }
+}
+@media(max-width:720px){
+  html.theme-halloween .welcome-overlay{padding:8px}
+  html.theme-halloween .welcome-overlay .welcome-card{
+    width:100%;
+    max-height:calc(100vh - 16px);
+    max-height:calc(100dvh - 16px);
+    padding:52px 20px 30px;
+    grid-template-columns:1fr;
+    gap:24px;
+    text-align:center;
+    border-radius:30px 30px 74px 30px;
+  }
+  html.theme-halloween .welcome-overlay .welcome-copy{order:1}
+  html.theme-halloween .welcome-overlay .welcome-reel{order:2}
+  html.theme-halloween .welcome-overlay .welcome-copy h2{
+    font-size:clamp(48px,12vw,62px);
+  }
+  html.theme-halloween .welcome-overlay .welcome-value{
+    margin-top:15px;
+    font-size:17px;
+    line-height:1.48;
+  }
+  html.theme-halloween .welcome-overlay .welcome-sub{
+    font-size:11px;
+    margin-top:9px;
+  }
+  html.theme-halloween .welcome-overlay .welcome-actions{
+    margin-top:19px;
+    gap:8px;
+  }
+  html.theme-halloween .welcome-overlay .welcome-reel-frame{
+    width:min(100%,290px);
+    max-width:290px;
+    height:355px;
+    min-height:0;
+    border-radius:22px;
+  }
+  html.theme-halloween .reel-poster-moon{font-size:92px}
+  html.theme-halloween .reel-poster-title{font-size:24px}
+}
+@media(prefers-reduced-motion:reduce){
+  html.theme-halloween .reel-play-button{transition:none}
+  html.theme-halloween .reel-play-button:hover{transform:none}
+}

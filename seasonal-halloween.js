@@ -15,11 +15,10 @@
     return active;
   }
   const activeNow=refreshTheme();
-  // Show the updated seasonal welcome once even for visitors who saw
-  // the earlier, non-video popup in their currently open browser tab.
+  // Present the revised welcome once to returning visitors in this session.
   if(activeNow){
     try{
-      const seasonalKey='orquideaHalloweenReelPreparedV1';
+      const seasonalKey='orquideaHalloweenAutoplayWelcomeV2';
       if(sessionStorage.getItem(seasonalKey)!=='1'){
         sessionStorage.removeItem('orquideaWelcomeSeenV3');
         sessionStorage.setItem(seasonalKey,'1');
@@ -28,8 +27,9 @@
   }
   setInterval(refreshTheme,60*60*1000);
 
-  // Load Instagram only on deliberate interaction. No external player
-  // requests are sent from the popup before this click.
+  // Attempt muted autoplay as soon as the welcome is visible.
+  // Instagram's native embed may ignore autoplay; we cannot force playback
+  // inside a third-party iframe. The direct Instagram link stays available.
   function initializeReel(){
     const play=document.getElementById('halloweenReelPlay');
     const frame=document.getElementById('halloweenReelFrame');
@@ -42,24 +42,33 @@
       frame.replaceChildren(poster);
       loaded=false;
     }
-    play.addEventListener('click',()=>{
+    function loadReel(){
       if(!document.documentElement.classList.contains('theme-halloween'))return;
-      if(loaded)return;
+      if(loaded||welcome.hidden||welcome.classList.contains('is-closing'))return;
       const iframe=document.createElement('iframe');
       iframe.title='Reel de Halloween de Orquidea Shop en Instagram';
-      iframe.src='https://www.instagram.com/reel/DesDDset5tw/embed/';
+      iframe.src='https://www.instagram.com/reel/DesDDset5tw/embed/?autoplay=1&muted=1&playsinline=1';
       iframe.loading='eager';
       iframe.referrerPolicy='strict-origin-when-cross-origin';
       iframe.setAttribute('allow','autoplay; encrypted-media; picture-in-picture; fullscreen');
       iframe.setAttribute('allowfullscreen','');
+      iframe.addEventListener('error',unloadReel,{once:true});
       frame.replaceChildren(iframe);
       loaded=true;
-    });
-    const observer=new MutationObserver(()=>{
-      if(welcome.hidden||welcome.classList.contains('is-closing'))unloadReel();
-    });
+    }
+    // The visitor may still manually start the video if Instagram blocks it.
+    play.addEventListener('click',loadReel);
+    function syncVisibility(){
+      if(welcome.hidden||welcome.classList.contains('is-closing')){
+        unloadReel();
+      }else if(welcome.classList.contains('is-visible')){
+        loadReel();
+      }
+    }
+    const observer=new MutationObserver(syncVisibility);
     observer.observe(welcome,{attributes:true,attributeFilter:['class','hidden']});
     window.addEventListener('pagehide',unloadReel);
+    syncVisibility();
   }
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',initializeReel,{once:true});

@@ -1,0 +1,104 @@
+/* Orquidea Shop — Halloween Chic 2026
+   Isolated, reversible seasonal skin. Does not alter catalogue or checkout. */
+.seasonal-only,.seasonal-decoration{display:none}
+html.theme-halloween .season-default{display:none!important}
+html.theme-halloween .seasonal-only{display:inline}
+html.theme-halloween .seasonal-decoration{display:block}
+html.theme-halloween{color-scheme:light}
+html.theme-halloween body{background:#fcf6fb;color:#312331}
+html.theme-halloween .top{background:linear-gradient(95deg,#241725,#503047 50%,#241725);color:#fff3ef;letter-spacing:.2em;font-weight:600}
+html.theme-halloween .nav{border-color:#714c6835;background:#fff7f1e8;box-shadow:0 12px 38px #44273b1b}
+html.theme-halloween .nav .brand .mark{border-color:#9f6d5a;color:#70394d;box-shadow:inset 0 0 0 3px #fce9ed}
+html.theme-halloween .links a:hover{color:#a24c32}
+html.theme-halloween .cart-trigger{background:#f2dce5;border:1px solid #cda2ab}
+html.theme-halloween .hero{
+  position:relative;
+  isolation:isolate;
+  border:1px solid #dbaebb75;
+  background:
+    radial-gradient(circle at 76% 10%,#f4c6bd5c 0,transparent 38%),
+    radial-gradient(circle at 4% 90%,#ddbddf72 0,transparent 36%),
+    linear-gradient(115deg,#f8e8ef 0%,#fff8f5 51%,#f0d5e5 100%);
+  box-shadow:0 28px 90px #65334813;
+}
+html.theme-halloween .hero::after{
+  content:"";position:absolute;inset:14px;z-index:-1;pointer-events:none;
+  border:1px solid #ffffff75;border-radius:30px 30px 105px 30px;
+}
+html.theme-halloween .hero>div:first-child{position:relative;z-index:3}
+html.theme-halloween .hero .ey{display:inline-block;color:#9e4a31;letter-spacing:.16em;font-size:9px;font-weight:700}
+html.theme-halloween .hero .ey .seasonal-only{
+  padding:8px 13px;border:1px solid #c58e7845;border-radius:999px;
+  background:linear-gradient(100deg,#ffede7,#f6d9df);box-shadow:0 6px 25px #b9623d12
+}
+html.theme-halloween .hero h1{font-size:clamp(55px,6.2vw,94px);line-height:.98;letter-spacing:-.025em;color:#342131}
+html.theme-halloween .hero h1 em{color:#aa4c32}
+html.theme-halloween .hero .lead{color:#694f62;font-size:13.5px;line-height:1.8;max-width:450px}
+html.theme-halloween .hero .btn{background:#382034;box-shadow:0 12px 25px #38203425}
+html.theme-halloween .hero .btn:hover{background:#6f3949;transform:translateY(-2px)}
+html.theme-halloween .hero .ghost{border-color:#aa4c3288}
+html.theme-halloween .photo{box-shadow:0 26px 68px #311a3450;outline:1px solid #ffffff85}
+html.theme-halloween .mainp{border:3px solid #fce7df}
+html.theme-halloween .p2{transform:rotate(3deg)}
+html.theme-halloween .p3{transform:rotate(-4deg)}
+html.theme-halloween .seal{background:#3d2439;border:1px solid #e4a36a;color:#ffefe9;box-shadow:0 16px 40px #2e152738}
+html.theme-halloween .seal b{color:#e8aa73}
+html.theme-halloween .seasonal-decoration{position:absolute;inset:0;pointer-events:none;z-index:4}
+html.theme-halloween .seasonal-moon{
+  position:absolute;right:20%;top:1%;font:90px/1 'Italiana',serif;
+  color:#c87546;text-shadow:0 2px 12px #fff0e0,0 0 38px #c8754640;
+  transform:rotate(-19deg);animation:orqMoonFloat 7s ease-in-out infinite alternate
+}
+html.theme-halloween .seasonal-star{position:absolute;color:#bd7046;text-shadow:0 0 14px #fff7eb;font-size:22px;animation:orqStarGlow 3.5s ease-in-out infinite alternate}
+html.theme-halloween .seasonal-star.s1{top:27%;right:3%;font-size:30px}
+html.theme-halloween .seasonal-star.s2{left:4%;top:12%;animation-delay:.8s}
+html.theme-halloween .seasonal-star.s3{right:20%;bottom:10%;font-size:14px;animation-delay:1.7s}
+html.theme-halloween .perks{background:#fff9f7f0;border-color:#cf9da733}
+html.theme-halloween .perks div{background:#f8e8ed}
+html.theme-halloween .perks span{color:#af5e42}
+html.theme-halloween .section .ey,.theme-halloween .mc .ey,.theme-halloween .cta .ey{color:#a04b39}
+html.theme-halloween .title em{font-style:italic;color:#ad5337}
+html.theme-halloween .fc{box-shadow:0 12px 32px #50293820}
+html.theme-halloween .fc:hover img,.theme-halloween .pi:hover img{transform:scale(1.035)}
+html.theme-halloween .fc img,.theme-halloween .pi img{transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+html.theme-halloween .fo{background:linear-gradient(transparent,#2b192de8)}
+html.theme-halloween .toolbar{background:#fffbf7e8;border-color:#b8899840}
+html.theme-halloween .tab.on{background:#f2d4dd;color:#46263d}
+html.theme-halloween .search{background:#452b3d}
+html.theme-halloween .pi{background:#f0d8e1}
+html.theme-halloween .tag{background:#fff3eb;color:#87452f;border:1px solid #e4bdaa}
+html.theme-halloween .manifest{background:#302034;border:1px solid #a6636e35}
+html.theme-halloween .cta{background:linear-gradient(125deg,#e5bfd4,#f8e3df 55%,#e6b59f);border:1px solid #d1a3ad}
+html.theme-halloween .cta .btn{background:#25D366;color:#102d18}
+html.theme-halloween .welcome-overlay{background:#2d1723ad}
+html.theme-halloween .welcome-overlay .welcome-card{background:linear-gradient(130deg,#fff8f2,#f9e3ea 54%,#deb9d2);border-color:#fff8efa8}
+html.theme-halloween .welcome-core{background:#3b2338}
+html.theme-halloween .welcome-copy h2 em{color:#a7553d}
+html.theme-halloween .welcome-kicker{color:#985035}
+html.theme-halloween .welcome-primary{background:#3b2338}
+html.theme-halloween .welcome-glow-b{background:radial-gradient(circle,#c9796b42,#b67fb20e 62%,transparent 74%)}
+html.theme-halloween .wa-float{border-color:#e4bdd0}
+@keyframes orqStarGlow{from{opacity:.45;transform:scale(.83)}to{opacity:1;transform:scale(1.08)}}
+@keyframes orqMoonFloat{from{transform:rotate(-19deg) translateY(0)}to{transform:rotate(-17deg) translateY(-11px)}}
+@media (max-width:850px){
+  html.theme-halloween .hero{gap:26px}
+  html.theme-halloween .seasonal-moon{right:10%;top:3%;font-size:76px}
+}
+@media (max-width:650px){
+  html.theme-halloween .top{font-size:7px;letter-spacing:.08em;text-align:center;padding:0 8px}
+  html.theme-halloween .hero{padding:36px 18px 22px;min-height:0}
+  html.theme-halloween .hero::after{inset:8px;border-radius:23px 23px 64px 23px}
+  html.theme-halloween .hero h1{font-size:clamp(48px,12.5vw,64px)}
+  html.theme-halloween .hero .lead{font-size:12px}
+  html.theme-halloween .gallery{height:375px}
+  html.theme-halloween .seasonal-moon{right:9%;top:-4%;font-size:65px}
+  html.theme-halloween .seasonal-star.s1{right:1%;top:35%}
+  html.theme-halloween .seasonal-star.s2{left:2%;top:6%}
+  html.theme-halloween .p2{transform:rotate(2deg)}
+  html.theme-halloween .p3{transform:rotate(-2deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  html.theme-halloween .seasonal-moon,html.theme-halloween .seasonal-star{animation:none!important}
+  html.theme-halloween .fc img,html.theme-halloween .pi img{transition:none!important}
+  html.theme-halloween .fc:hover img,html.theme-halloween .pi:hover img{transform:none!important}
+}

@@ -15,13 +15,13 @@
       if(capabilities?.available)root.hidden=false;
       registrationAvailable=capabilities?.registrationAvailable===true;
     }).catch(()=>{});
-  const panel=$('orqAssistantPanel'),launch=$('orqAssistantLaunch');
+  const panel=$('orqAssistantPanel'),launch=$('orqAssistantLaunch'),expand=$('orqAssistantExpand');
   const messages=$('orqAssistantMessages'),input=$('orqAssistantInput');
   const send=$('orqAssistantSend'),form=$('orqAssistantForm');
   const lead=$('orqLeadForm'),guest=$('orqGuestCheckout');
   let history=[],busy=false,leadName='';
   let suggestedProducts=[],userTurns=0,assistantHealthy=true,checkoutPromptActive=false;
-  let followUpTimer=null,followUpStep=0,totalFollowUps=0;
+  let followUpTimer=null,followUpStep=0,totalFollowUps=0,noReplyNudgeSent=false;
   const FIRST_FOLLOW_UP_MS=40000;
   const SECOND_FOLLOW_UP_MS=80000;
   const MAX_FOLLOW_UPS_PER_VISIT=4;
@@ -46,7 +46,8 @@
   function canFollowUp(){
     return !root.hidden&&!panel.hidden&&document.visibilityState==='visible'
       &&!busy&&lead.hidden&&!checkoutPromptActive&&!input.value.trim()&&assistantHealthy
-      &&followUpStep<2&&totalFollowUps<MAX_FOLLOW_UPS_PER_VISIT;
+      &&followUpStep<2&&totalFollowUps<MAX_FOLLOW_UPS_PER_VISIT
+      &&(userTurns>0||!noReplyNudgeSent);
   }
   function followUpText(){
     const items=getCart();
@@ -67,9 +68,7 @@
         ?'¿Te gustaría que te muestre opciones según tu estilo o tu presupuesto? 🌸 Así elegimos algo que realmente te encante.'
         :'También podemos empezar por una ocasión especial. ¿Es para salir, para el día a día o para regalar?';
     }
-    return followUpStep===0
-      ?'¿Te ayudo a encontrar algo lindo? 💜 Cuéntame qué estilo te gusta y te muestro opciones de la colección.'
-      :'Si tienes un presupuesto en mente, dímelo y buscamos prendas que se ajusten a él. ✨';
+    return '¿Buscas algo para ti o para regalar? 💜 Te muestro opciones según tu estilo y presupuesto.';
   }
   function scheduleFollowUp(delay=FIRST_FOLLOW_UP_MS){
     stopFollowUp();
@@ -82,7 +81,10 @@
       history.push({role:'assistant',content:message});
       history=history.slice(-12);
       followUpStep++;totalFollowUps++;
-      if(followUpStep<2)scheduleFollowUp(SECOND_FOLLOW_UP_MS);
+      // Only one gentle nudge before the shopper has interacted.
+      // After a real message, up to two contextual follow-ups are allowed.
+      if(userTurns===0)noReplyNudgeSent=true;
+      if(userTurns>0&&followUpStep<2)scheduleFollowUp(SECOND_FOLLOW_UP_MS);
     },delay);
   }
   function restartFollowUp(){
@@ -98,10 +100,20 @@
   }
   function closeChat(){
     stopFollowUp();
-    panel.hidden=true;root.classList.remove('is-open');
+    panel.hidden=true;root.classList.remove('is-open','is-expanded');
+    expand.setAttribute('aria-pressed','false');
+    expand.setAttribute('aria-label','Ampliar chat');
+    expand.title='Ampliar chat';
     launch.setAttribute('aria-expanded','false');
     launch.focus({preventScroll:true});
   }
+  expand.addEventListener('click',()=>{
+    const expanded=root.classList.toggle('is-expanded');
+    expand.setAttribute('aria-pressed',String(expanded));
+    expand.setAttribute('aria-label',expanded?'Reducir chat':'Ampliar chat');
+    expand.title=expanded?'Reducir chat':'Ampliar chat';
+    scroll();
+  });
   launch.addEventListener('click',()=>panel.hidden?openChat():closeChat());
   $('orqAssistantClose').addEventListener('click',closeChat);
   function createProductCard(p){
@@ -240,5 +252,5 @@
     }catch(e){notice.textContent='No se pudo guardar el registro. Puedes continuar sin registrarte.';}
     finally{button.disabled=false;}
   });
-  textMessage('¡Hola! 🌸 Soy la asesora virtual de Orquídea Shop. ¿Buscas algo para una ocasión especial, un estilo o un presupuesto? Te ayudo a elegir y, cuando estés lista, pasamos el pedido a WhatsApp.');
+  textMessage('¡Hola! 🌸 Soy tu asesora de Orquídea Shop. ¿Qué te gustaría encontrar hoy? Te ayudo a elegir algo que vaya contigo.');
 })();

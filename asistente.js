@@ -182,7 +182,7 @@
     const totalRow=document.createElement('div');totalRow.className='orq-combo-total';
     const label=document.createElement('span');label.textContent='Total de los productos';
     const value=document.createElement('strong');
-    value.textContent=currency(Number(combo.total)||products.reduce((a,p)=>a+Number(String(p.precio||'').replace(/\\D/g,'')),0));
+    value.textContent=currency(Number(combo.total)||products.reduce((a,p)=>a+Number(String(p.precio||'').replace(/[^0-9]/g,'')),0));
     totalRow.append(label,value);
     const note=document.createElement('p');note.className='orq-combo-note';
     note.textContent=combo.pricingNote||'Sin descuento de combo. Existencias y envío por confirmar.';

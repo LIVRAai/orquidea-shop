@@ -139,7 +139,10 @@
     try{
       const response=await fetch('/api/assistant',{method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({message:value,history:history.slice(-8)})});
+        body:JSON.stringify({
+          message:value,history:history.slice(-8),
+          cart:getCart().slice(0,10).map(item=>({nombre:item.n,talla:item.size,cantidad:item.qty}))
+        })});
       const body=await response.json().catch(()=>({}));
       loading.remove();
       if(!response.ok){

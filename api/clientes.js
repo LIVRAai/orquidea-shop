@@ -10,7 +10,7 @@ function limited(ip){
 }
 function sameOrigin(req){
   if(!req.headers.origin)return true;
-  try{const u=new URL(req.headers.origin);return u.protocol==='https:'&&(u.hostname==='orquideas-shop.vercel.app'||u.hostname==='orquideas-shop-livra-ai-s-projects.vercel.app'||u.hostname.endsWith('-livra-ai-s-projects.vercel.app'))}catch{return false}
+  try{const u=new URL(req.headers.origin);return u.protocol==='https:'&&(u.hostname==='orquideas-shop.vercel.app'||u.hostname==='orquideas-shop-livra-ai-s-projects.vercel.app'||(/^orquideas-shop-[a-z0-9]+-livra-ai-s-projects\.vercel\.app$/.test(u.hostname)))}catch{return false}
 }
 function phoneNumber(value){
   const digits=String(value||'').replace(/\D/g,'');

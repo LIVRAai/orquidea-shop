@@ -140,6 +140,88 @@
     products.slice(0,3).forEach(p=>wrap.appendChild(createProductCard(p)));
     messages.appendChild(wrap);scroll();
   }
+  function showCombo(combo){
+    if(!combo||!Array.isArray(combo.products)||combo.products.length<2)return;
+    const products=combo.products.slice(0,3);
+    const card=document.createElement('article');card.className='orq-combo';
+    const kicker=document.createElement('span');kicker.className='orq-combo-kicker';
+    kicker.textContent='✦ Selección de tu asesora';
+    const title=document.createElement('h3');title.textContent=combo.title||'Un combo pensado para ti';
+    const reason=document.createElement('p');reason.className='orq-combo-reason';
+    reason.textContent=combo.reason||'Dos estilos para acompañarte en momentos diferentes.';
+    const list=document.createElement('div');list.className='orq-combo-list';
+    const choices=[];
+    products.forEach(p=>{
+      const item=document.createElement('div');item.className='orq-combo-item';
+      const photo=document.createElement('img');
+      photo.loading='lazy';photo.alt=p.nombre||'Producto de Orquídea Shop';
+      photo.src=typeof img==='function'?img(p.imagen,320):'';
+      const detail=document.createElement('div');detail.className='orq-combo-info';
+      const name=document.createElement('strong');name.textContent=p.nombre||'Producto';
+      const price=document.createElement('span');price.textContent=p.precio||'Precio por confirmar';
+      const sizes=String(p.tallas||'').split(',').map(v=>v.trim()).filter(Boolean);
+      const select=document.createElement('select');select.className='orq-combo-size';
+      select.setAttribute('aria-label','Talla para '+p.nombre);
+      if(sizes.length){
+        const placeholder=document.createElement('option');placeholder.value='';
+        placeholder.textContent='Selecciona tu talla';placeholder.disabled=true;placeholder.selected=true;
+        select.appendChild(placeholder);
+        sizes.forEach(size=>{
+          const option=document.createElement('option');option.value=size;option.textContent='Talla '+size;
+          select.appendChild(option);
+        });
+      }else{
+        const option=document.createElement('option');option.value='Por confirmar';
+        option.textContent='Talla por confirmar';
+        select.appendChild(option);
+        select.value='Por confirmar';
+      }
+      detail.append(name,price,select);item.append(photo,detail);list.appendChild(item);
+      choices.push({product:p,select});
+    });
+    const totalRow=document.createElement('div');totalRow.className='orq-combo-total';
+    const label=document.createElement('span');label.textContent='Total de los productos';
+    const value=document.createElement('strong');
+    value.textContent=currency(Number(combo.total)||products.reduce((a,p)=>a+Number(String(p.precio||'').replace(/\\D/g,'')),0));
+    totalRow.append(label,value);
+    const note=document.createElement('p');note.className='orq-combo-note';
+    note.textContent=combo.pricingNote||'Sin descuento de combo. Existencias y envío por confirmar.';
+    const warning=document.createElement('p');warning.className='orq-combo-warning';
+    warning.setAttribute('role','status');
+    const add=document.createElement('button');add.type='button';
+    add.className='orq-combo-add';add.textContent='Agregar selección al carrito';
+    add.addEventListener('click',()=>{
+      if(typeof cart==='undefined'||!Array.isArray(cart)
+        ||typeof saveCart!=='function'||typeof openCart!=='function'){
+        warning.textContent='No se pudo abrir el carrito. Puedes elegir cada prenda por separado.';
+        return;
+      }
+      if(choices.some(c=>!c.select.value)){
+        warning.textContent='Selecciona la talla de cada prenda para continuar.';
+        return;
+      }
+      const planned=choices.map(({product,select})=>{
+        const price=Number(String(product.precio||'').replace(/[^0-9]/g,''));
+        return {product,size:select.value,price};
+      });
+      if(planned.some(x=>!Number.isSafeInteger(x.price)||x.price<=0)){
+        warning.textContent='Hay un precio por confirmar. Consulta con la tienda antes de continuar.';
+        return;
+      }
+      // Mutate the existing storefront cart only after all choices are valid.
+      for(const {product,size,price} of planned){
+        const key=product.nombre+'__'+size;
+        const existing=cart.find(x=>x.key===key);
+        if(existing)existing.qty+=1;
+        else cart.push({key,n:product.nombre,size,qty:1,price,img:product.imagen});
+      }
+      saveCart();
+      closeChat();
+      openCart();
+    });
+    card.append(kicker,title,reason,list,totalRow,note,warning,add);
+    messages.appendChild(card);scroll();
+  }
   async function ask(text){
     const value=safeText(text);if(!value||busy)return;
     stopFollowUp();
@@ -163,10 +245,16 @@
         return;
       }
       textMessage(body.reply);
-      suggestedProducts=Array.isArray(body.recommendations)?body.recommendations:[];
       assistantHealthy=true;
+      const combo=body.combo&&Array.isArray(body.combo.products)?body.combo:null;
+      suggestedProducts=combo?combo.products:
+        (Array.isArray(body.recommendations)?body.recommendations:[]);
+      if(combo)showCombo(combo);
       showProducts(body.recommendations);
-      history.push({role:'user',content:value},{role:'assistant',content:safeText(body.reply)});
+      const comboContext=combo?' Combo mostrado: '+combo.products.map(p=>p.nombre).join(' + ')+
+        '. Total '+currency(combo.total)+'. Motivo: '+combo.reason:'';
+      history.push({role:'user',content:value},
+        {role:'assistant',content:safeText(body.reply+comboContext)});
       history=history.slice(-12);
       if(body.ready_to_checkout){
         if(hasCart())showLead();

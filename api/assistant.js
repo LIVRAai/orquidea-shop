@@ -17,7 +17,7 @@ function sameOrigin(req){
   if(!origin)return true;
   try{
     const u=new URL(origin);
-    return u.protocol==='https:'&&(u.hostname==='orquideas-shop.vercel.app'||u.hostname==='orquideas-shop-livra-ai-s-projects.vercel.app'||u.hostname.endsWith('-livra-ai-s-projects.vercel.app')||u.hostname==='localhost');
+    return u.protocol==='https:'&&(u.hostname==='orquideas-shop.vercel.app'||u.hostname==='orquideas-shop-livra-ai-s-projects.vercel.app'||(/^orquideas-shop-[a-z0-9]+-livra-ai-s-projects\.vercel\.app$/.test(u.hostname))||u.hostname==='localhost');
   }catch{return false}
 }
 function redact(s){

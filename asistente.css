@@ -50,3 +50,77 @@
 @media(prefers-reduced-motion:reduce){.orq-chat-launch:hover{transform:none}}
 
 .orq-assistant[hidden]{display:none!important}
+
+
+/* Release responsive polish: touch-friendly, readable and safe-area aware. */
+.orq-assistant{z-index:72;right:max(18px,env(safe-area-inset-right,0px));bottom:calc(94px + env(safe-area-inset-bottom,0px))}
+.orq-chat-launch{min-height:48px;padding:12px 17px;font-size:12px;transition:background-color .18s,transform .18s}
+.orq-chat-launch:focus-visible,.orq-chat-close:focus-visible,.orq-chat-product-info button:focus-visible,.orq-chat-send-form button:focus-visible,.orq-chat-checkout-action:focus-visible,.orq-lead-primary:focus-visible,.orq-lead-guest:focus-visible{outline:3px solid #c08bd0;outline-offset:3px}
+.orq-chat-panel{
+  width:min(420px,calc(100vw - 28px));
+  height:min(700px,calc(100dvh - 136px));
+  max-height:calc(100dvh - 136px);
+  bottom:63px;
+  isolation:isolate;
+}
+.orq-chat-head{flex-shrink:0;padding:14px 16px}
+.orq-chat-head-info b{font-size:15px}
+.orq-chat-head-info small{font-size:11px;line-height:1.5}
+.orq-chat-close{flex:0 0 44px;width:44px;height:44px;font-size:27px}
+.orq-chat-messages{min-height:0;overscroll-behavior:contain;scroll-behavior:smooth;padding:15px}
+.orq-chat-bubble{font-size:13px;line-height:1.55;max-width:94%}
+.orq-chat-product{grid-template-columns:88px minmax(0,1fr);gap:11px;padding:9px}
+.orq-chat-product>img{width:88px;height:117px}
+.orq-chat-product-info strong,.orq-chat-product-info span{font-size:13px}
+.orq-chat-product-info small{font-size:11px}
+.orq-chat-product-info button{min-height:40px;font-size:11px}
+.orq-chat-footer{flex:0 0 auto;padding:12px 13px 13px}
+.orq-chat-send-form input{min-height:45px;padding:11px 15px;font-size:14px}
+.orq-chat-send-form button{flex-basis:44px;width:44px;height:44px;font-size:19px}
+.orq-chat-send-form button:not(:disabled):hover{background:#774d71}
+.orq-chat-checkout-inline{align-self:flex-start;max-width:100%;padding:3px 0 7px}
+.orq-chat-checkout-action{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:11px 15px;border:0;border-radius:999px;background:#3c6248;color:white;font-size:12px;font-weight:600;line-height:1.3;cursor:pointer;box-shadow:0 7px 19px #204d3030}
+.orq-chat-checkout-action:hover{background:#2b5036}
+.orq-lead-form{max-height:45%;overscroll-behavior:contain;padding:14px 16px}
+.orq-lead-form strong{font-size:15px}
+.orq-lead-form>p,.orq-consent,.orq-lead-notice{font-size:12px}
+.orq-lead-form label:not(.orq-consent){font-size:12px}
+.orq-lead-form input[type=text],.orq-lead-form input[type=tel]{min-height:44px;font-size:16px}
+.orq-lead-primary,.orq-lead-guest{min-height:44px;font-size:12px}
+.orq-assistant.is-open .orq-chat-launch{visibility:hidden;pointer-events:none}
+@media(max-width:650px){
+  .orq-assistant{
+    right:calc(11px + env(safe-area-inset-right,0px));
+    bottom:calc(83px + env(safe-area-inset-bottom,0px));
+  }
+  .orq-chat-launch{min-height:46px;padding:10px 13px;font-size:11px}
+  .orq-chat-panel{
+    position:fixed;
+    left:max(8px,env(safe-area-inset-left,0px));
+    right:max(8px,env(safe-area-inset-right,0px));
+    top:max(8px,env(safe-area-inset-top,0px));
+    bottom:max(8px,env(safe-area-inset-bottom,0px));
+    width:auto;
+    height:auto;
+    max-height:none;
+    border-radius:20px;
+  }
+  .orq-chat-messages{padding:12px 13px}
+  .orq-chat-bubble{font-size:13px}
+  .orq-chat-footer{padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px))}
+  .orq-chat-send-form input{font-size:16px}
+  .orq-lead-form{max-height:50%}
+}
+@media(max-width:360px){
+  .orq-chat-product{grid-template-columns:75px minmax(0,1fr)}
+  .orq-chat-product>img{width:75px;height:102px}
+  .orq-chat-product-info button{font-size:10px}
+  .orq-chat-head-info small{font-size:10px}
+}
+@media(max-height:530px) and (min-width:651px){
+  .orq-chat-panel{height:calc(100dvh - 30px);max-height:calc(100dvh - 30px);bottom:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .orq-chat-launch{transition:none}
+  .orq-chat-messages{scroll-behavior:auto}
+}

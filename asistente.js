@@ -61,11 +61,11 @@
       const name=String(suggestedProducts[0].nombre||'esta prenda').slice(0,65);
       return followUpStep===0
         ?'¿Qué te pareció '+name+'? 💜 Puedo ayudarte a elegir la talla o buscar una alternativa que vaya más contigo.'
-        :'Si alguna opción te gustó, puedes tocar «Elegir talla y agregar». ¿Quieres que armemos tu pedido? ✨';
+        :'Si te gusta esta línea, puedo proponerte un combo de dos conjuntos y explicarte qué aporta cada uno. ¿Te gustaría verlo? ✨';
     }
     if(userTurns>0){
       return followUpStep===0
-        ?'¿Te gustaría que te muestre opciones según tu estilo o tu presupuesto? 🌸 Así elegimos algo que realmente te encante.'
+        ?'Si me cuentas tu estilo y presupuesto, puedo armarte un combo de dos conjuntos para diferentes ocasiones. ¿Te gustaría? 🌸'
         :'También podemos empezar por una ocasión especial. ¿Es para salir, para el día a día o para regalar?';
     }
     return '¿Buscas algo para ti o para regalar? 💜 Te muestro opciones según tu estilo y presupuesto.';

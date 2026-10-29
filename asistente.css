@@ -1,0 +1,56 @@
+/* Orquidea Shop — AI sales assistant, isolated from the original theme */
+.orq-assistant{position:fixed;right:20px;bottom:92px;z-index:72;font-family:'DM Sans',sans-serif;color:#312331}
+.orq-chat-launch{display:flex;align-items:center;gap:9px;border:1px solid #e7c7e9;background:#40283d;color:white;border-radius:999px;padding:12px 16px;box-shadow:0 12px 32px #2b132c45;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:.015em}
+.orq-chat-launch:hover{background:#674365;transform:translateY(-2px)}
+.orq-chat-launch svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9}
+.orq-chat-panel{position:absolute;right:0;bottom:60px;width:min(390px,calc(100vw - 22px));max-height:min(670px,calc(100dvh - 100px));display:flex;flex-direction:column;background:#fffafa;border:1px solid #e9d4e6;border-radius:24px;overflow:hidden;box-shadow:0 18px 70px #27142c54}
+.orq-chat-panel[hidden],.orq-lead-form[hidden]{display:none!important}
+.orq-chat-head{display:flex;align-items:center;gap:10px;padding:15px 16px;background:linear-gradient(110deg,#3c263e,#6b4766);color:#fff}
+.orq-chat-head-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:#ffffff24;font:25px 'Italiana',serif}
+.orq-chat-head-info{flex:1}.orq-chat-head-info b{display:block;font-size:14px}.orq-chat-head-info small{font-size:10px;color:#f2dfe9}
+.orq-chat-close{border:0;background:transparent;color:#fff;font-size:24px;cursor:pointer;width:30px;height:30px}
+.orq-chat-messages{display:flex;flex-direction:column;gap:11px;overflow-y:auto;padding:16px;flex:1;min-height:100px;scrollbar-width:thin}
+.orq-chat-bubble{font-size:12px;line-height:1.65;white-space:pre-wrap;padding:11px 13px;max-width:92%;border-radius:16px;word-break:break-word}
+.orq-chat-bubble.from-bot{background:#f5e8f3;align-self:flex-start;border-bottom-left-radius:5px}
+.orq-chat-bubble.from-user{background:#503047;color:white;align-self:flex-end;border-bottom-right-radius:5px}
+.orq-chat-products{display:grid;gap:9px}
+.orq-chat-product{display:grid;grid-template-columns:85px minmax(0,1fr);gap:10px;padding:8px;background:white;border:1px solid #e7d3e4;border-radius:14px}
+.orq-chat-product>img{height:112px;width:85px;object-fit:cover;background:#f9e8f2;border-radius:9px}
+.orq-chat-product-info{display:flex;flex-direction:column;gap:5px;justify-content:center;min-width:0}
+.orq-chat-product-info strong{font-size:12px;line-height:1.25}
+.orq-chat-product-info span{font-size:12px;color:#743f6f;font-weight:600}
+.orq-chat-product-info small{font-size:10px;color:#715e72}
+.orq-chat-product-info button{font-size:10px;color:white;background:#40293e;border:0;border-radius:99px;padding:8px 9px;cursor:pointer;text-align:center}
+.orq-chat-product-info button:hover{background:#7c5275}
+.orq-chat-footer{padding:11px 12px 13px;border-top:1px solid #f0e4ee;background:#fffafa}
+.orq-chat-status{font-size:9px;color:#746475;margin:0 0 8px;text-align:center}
+.orq-chat-suggestions{display:flex;gap:5px;overflow-x:auto;margin-bottom:9px;scrollbar-width:none}
+.orq-chat-suggestions button{background:#f5e4f0;border:1px solid #ecd0e6;border-radius:99px;white-space:nowrap;padding:7px 10px;color:#51344e;font-size:10px;cursor:pointer}
+.orq-chat-send-form{display:flex;align-items:center;gap:8px}
+.orq-chat-send-form input{flex:1;min-width:0;padding:10px 13px;background:#f8eef5;border-radius:99px;border:1px solid #e6d1e2;outline:none;color:#312331;font-size:12px}
+.orq-chat-send-form input:focus{border-color:#b684b7}
+.orq-chat-send-form button{flex:0 0 35px;height:35px;width:35px;border:0;border-radius:50%;background:#503047;color:white;cursor:pointer;font-size:17px}
+.orq-chat-send-form button:disabled{opacity:.45;cursor:wait}
+.orq-chat-checkout{margin-top:8px;padding:10px 12px;border:1px solid #c5a0c5;border-radius:99px;background:white;color:#43243f;width:100%;font-size:11px;font-weight:600;cursor:pointer}
+.orq-lead-form{display:flex;flex-direction:column;gap:8px;padding:13px;background:#fff5fa;border-top:1px solid #e6cde0;max-height:285px;overflow:auto}
+.orq-lead-form strong{font-size:13px}
+.orq-lead-form>p{font-size:10px;color:#776274;margin:0 0 4px}
+.orq-lead-form label:not(.orq-consent){font-size:10px;font-weight:500}
+.orq-lead-form input[type=text],.orq-lead-form input[type=tel]{height:34px;width:100%;padding:8px 10px;border-radius:10px;border:1px solid #d9b9d6;background:white;font-size:12px;color:#312331;outline:none}
+.orq-consent{display:flex;align-items:flex-start;gap:7px;font-size:10px;line-height:1.45;color:#4b3a4b}
+.orq-consent input{margin-top:2px;accent-color:#743a70;flex:0 0 14px}
+.orq-consent a{color:#7e327e;text-decoration:underline}
+.orq-lead-primary{border:0;border-radius:99px;background:#432a42;color:#fff;padding:11px;font-size:11px;font-weight:600;cursor:pointer}
+.orq-lead-primary:disabled{opacity:.6}
+.orq-lead-guest{background:transparent;border:0;color:#704d6e;text-decoration:underline;font-size:10px;cursor:pointer}
+.orq-lead-notice{font-size:10px;color:#684565;min-height:14px;line-height:1.45}
+@media(max-width:650px){
+ .orq-assistant{right:11px;bottom:75px}
+ .orq-chat-launch{padding:11px 12px;font-size:10px}
+ .orq-chat-panel{position:fixed;left:8px;right:8px;top:auto;bottom:143px;width:auto;max-height:calc(100dvh - 160px);border-radius:18px}
+ .orq-chat-messages{min-height:90px}
+ .orq-lead-form{max-height:38dvh}
+}
+@media(prefers-reduced-motion:reduce){.orq-chat-launch:hover{transform:none}}
+
+.orq-assistant[hidden]{display:none!important}

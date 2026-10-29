@@ -216,8 +216,8 @@
   function redirectCheckout(){
     const url=checkoutURL();
     if(!url){textMessage('Primero agrega un producto al carrito.');return;}
-    const tab=window.open(url,'_blank','noopener,noreferrer');
-    if(!tab)window.location.assign(url);
+    // Explicit click only; on mobile this opens the existing WhatsApp channel.
+    window.location.assign(url);
   }
   guest.addEventListener('click',()=>{leadName='';redirectCheckout();});
   lead.addEventListener('submit',async e=>{

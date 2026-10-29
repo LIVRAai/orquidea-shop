@@ -17,6 +17,11 @@
   const send=$('orqAssistantSend'),form=$('orqAssistantForm');
   const lead=$('orqLeadForm'),guest=$('orqGuestCheckout');
   let history=[],busy=false,leadName='';
+  let suggestedProducts=[],userTurns=0,assistantHealthy=true;
+  let followUpTimer=null,followUpStep=0,totalFollowUps=0;
+  const FIRST_FOLLOW_UP_MS=40000;
+  const SECOND_FOLLOW_UP_MS=80000;
+  const MAX_FOLLOW_UPS_PER_VISIT=4;
   const safeText=x=>String(x||'').trim().slice(0,700);
   const currency=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n);
   const getCart=()=>typeof cart!=='undefined'&&Array.isArray(cart)?cart:[];
@@ -28,11 +33,69 @@
     bubble.textContent=safeText(text);messages.appendChild(bubble);scroll();
     return bubble;
   }
+  // Give the shopper time to respond. Never message from a closed chat,
+  // another browser tab, while typing, or while completing the consent form.
+  // Follow-ups are local, avoiding extra OpenAI calls during inactivity.
+  function stopFollowUp(){
+    if(followUpTimer!==null)clearTimeout(followUpTimer);
+    followUpTimer=null;
+  }
+  function canFollowUp(){
+    return !root.hidden&&!panel.hidden&&document.visibilityState==='visible'
+      &&!busy&&lead.hidden&&!input.value.trim()&&assistantHealthy
+      &&followUpStep<2&&totalFollowUps<MAX_FOLLOW_UPS_PER_VISIT;
+  }
+  function followUpText(){
+    const items=getCart();
+    if(items.length){
+      const count=items.reduce((n,item)=>n+Number(item.qty||1),0);
+      return followUpStep===0
+        ?'¡Qué buena elección! 💜 Ya tienes '+count+' '+(count===1?'prenda':'prendas')+' en tu carrito. ¿Te gustaría que preparemos el pedido para confirmar disponibilidad y pago por WhatsApp?'
+        :'Si estás lista, dime «quiero comprar» y te ayudo con el último paso. Podemos confirmar las existencias y el envío antes de pagar. ✨';
+    }
+    if(suggestedProducts.length){
+      const name=String(suggestedProducts[0].nombre||'esta prenda').slice(0,65);
+      return followUpStep===0
+        ?'¿Qué te pareció '+name+'? 💜 Puedo ayudarte a elegir la talla o buscar una alternativa que vaya más contigo.'
+        :'Si alguna opción te gustó, puedes tocar «Elegir talla y agregar». ¿Quieres que armemos tu pedido? ✨';
+    }
+    if(userTurns>0){
+      return followUpStep===0
+        ?'¿Te gustaría que te muestre opciones según tu estilo o tu presupuesto? 🌸 Así elegimos algo que realmente te encante.'
+        :'También podemos empezar por una ocasión especial. ¿Es para salir, para el día a día o para regalar?';
+    }
+    return followUpStep===0
+      ?'¿Te ayudo a encontrar algo lindo? 💜 Cuéntame qué estilo te gusta y te muestro opciones de la colección.'
+      :'Si tienes un presupuesto en mente, dímelo y buscamos prendas que se ajusten a él. ✨';
+  }
+  function scheduleFollowUp(delay=FIRST_FOLLOW_UP_MS){
+    stopFollowUp();
+    if(!canFollowUp())return;
+    followUpTimer=setTimeout(()=>{
+      followUpTimer=null;
+      if(!canFollowUp())return;
+      const message=followUpText();
+      textMessage(message);
+      history.push({role:'assistant',content:message});
+      history=history.slice(-12);
+      followUpStep++;totalFollowUps++;
+      if(followUpStep<2)scheduleFollowUp(SECOND_FOLLOW_UP_MS);
+    },delay);
+  }
+  function restartFollowUp(){
+    stopFollowUp();
+    followUpStep=0;
+    scheduleFollowUp();
+  }
   function openChat(){
     panel.hidden=false;launch.setAttribute('aria-expanded','true');
     input.focus({preventScroll:true});
+    restartFollowUp();
   }
-  function closeChat(){panel.hidden=true;launch.setAttribute('aria-expanded','false');}
+  function closeChat(){
+    stopFollowUp();
+    panel.hidden=true;launch.setAttribute('aria-expanded','false');
+  }
   launch.addEventListener('click',()=>panel.hidden?openChat():closeChat());
   $('orqAssistantClose').addEventListener('click',closeChat);
   function createProductCard(p){
@@ -61,6 +124,9 @@
   }
   async function ask(text){
     const value=safeText(text);if(!value||busy)return;
+    stopFollowUp();
+    followUpStep=0;
+    userTurns++;
     busy=true;send.disabled=true;input.disabled=true;
     textMessage(value,'user');input.value='';
     const loading=textMessage('Estoy revisando nuestra colección…');
@@ -70,8 +136,14 @@
         body:JSON.stringify({message:value,history:history.slice(-8)})});
       const body=await response.json().catch(()=>({}));
       loading.remove();
-      if(!response.ok){textMessage(body.error||'No pude responder por el momento.');return;}
+      if(!response.ok){
+        assistantHealthy=false;
+        textMessage(body.error||'No pude responder por el momento.');
+        return;
+      }
       textMessage(body.reply);
+      suggestedProducts=Array.isArray(body.recommendations)?body.recommendations:[];
+      assistantHealthy=true;
       showProducts(body.recommendations);
       history.push({role:'user',content:value},{role:'assistant',content:safeText(body.reply)});
       history=history.slice(-12);
@@ -80,15 +152,27 @@
         else textMessage('Cuando tengas tu favorito, pulsa “Elegir talla y agregar” para preparar tu pedido.');
       }
     }catch(e){
+      assistantHealthy=false;
       loading.remove();textMessage('No tengo conexión en este momento. Puedes continuar por WhatsApp.');
     }finally{
       busy=false;send.disabled=false;input.disabled=false;
       scroll();
+      scheduleFollowUp();
     }
   }
   form.addEventListener('submit',e=>{e.preventDefault();ask(input.value);});
+  input.addEventListener('input',()=>{
+    stopFollowUp();
+    if(!input.value.trim())restartFollowUp();
+  });
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible')restartFollowUp();
+    else stopFollowUp();
+  });
+  window.addEventListener('pagehide',stopFollowUp);
   function showLead(){
     if(!hasCart()){textMessage('Primero elige el producto y la talla para continuar.');return;}
+    stopFollowUp();
     lead.hidden=false;
     $('orqLeadName').focus({preventScroll:true});
     lead.scrollIntoView({block:'nearest',behavior:'smooth'});

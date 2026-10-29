@@ -4,6 +4,14 @@
   const $=id=>document.getElementById(id);
   const root=$('orqAssistant');
   if(!root)return;
+  // Do not expose an unfinished checkout experience to public visitors.
+  // A preview query parameter permits a visual inspection without credentials.
+  root.hidden=true;
+  const visualPreview=new URLSearchParams(window.location.search).get('previewAsesora')==='1';
+  if(visualPreview)root.hidden=false;
+  fetch('/api/assistant-status',{cache:'no-store'}).then(r=>r.ok?r.json():null)
+    .then(s=>{if(s?.available)root.hidden=false;})
+    .catch(()=>{});
   const panel=$('orqAssistantPanel'),launch=$('orqAssistantLaunch');
   const messages=$('orqAssistantMessages'),input=$('orqAssistantInput');
   const send=$('orqAssistantSend'),status=$('orqAssistantStatus'),form=$('orqAssistantForm');

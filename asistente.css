@@ -58,8 +58,8 @@
 .orq-chat-launch:focus-visible,.orq-chat-close:focus-visible,.orq-chat-product-info button:focus-visible,.orq-chat-send-form button:focus-visible,.orq-chat-checkout-action:focus-visible,.orq-lead-primary:focus-visible,.orq-lead-guest:focus-visible{outline:3px solid #c08bd0;outline-offset:3px}
 .orq-chat-panel{
   width:min(420px,calc(100vw - 28px));
-  height:min(700px,calc(100dvh - 136px));
-  max-height:calc(100dvh - 136px);
+  height:min(700px,calc(100dvh - 180px));
+  max-height:calc(100dvh - 180px);
   bottom:63px;
   isolation:isolate;
 }
@@ -123,4 +123,17 @@
 @media(prefers-reduced-motion:reduce){
   .orq-chat-launch{transition:none}
   .orq-chat-messages{scroll-behavior:auto}
+}
+
+/* Low-height laptops: fix panel to viewport so header and input stay visible. */
+@media (max-height:600px) and (min-width:651px){
+  .orq-chat-panel{
+    position:fixed;
+    top:12px;
+    right:max(12px,env(safe-area-inset-right,0px));
+    bottom:12px;
+    width:min(420px,calc(100vw - 24px));
+    height:auto;
+    max-height:none;
+  }
 }

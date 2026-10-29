@@ -6,10 +6,12 @@ y captura voluntaria de nombre, celular y consentimiento en la pestaña "Cliente
 
 ## Estado inicial
 
-El código se puede desplegar, pero por seguridad el botón del chat estará OCULTO
-hasta que estén configuradas las integraciones de OpenAI y Apps Script.
-Para inspeccionar el diseño sin activar nada: abre la tienda agregando
-?previewAsesora=1 a su URL. En ese modo los endpoints responderán que faltan credenciales.
+La asesora IA se muestra públicamente cuando OPENAI_API_KEY existe en el entorno
+de producción. La captura de clientes es una capacidad INDEPENDIENTE y permanece
+desactivada hasta que Google Sheets tenga escritura real y el aviso legal esté
+verificado. Mientras tanto la clienta puede asesorarse y finalizar su pedido
+sin entregar datos personales, mediante el WhatsApp original de la tienda.
+Para una previsualización forzada del diseño: ?previewAsesora=1.
 
 No colocar secretos en index.html, en JavaScript del navegador, en GitHub,
 en mensajes de chat ni en la hoja de cálculo.
@@ -47,7 +49,8 @@ crear como secretos (para Production y Preview):
 OPENAI_API_KEY = la clave OpenAI (configúrala allí, nunca en el chat).
 CLIENTES_SCRIPT_URL = URL del nuevo Apps Script terminada en /exec.
 CLIENTES_SCRIPT_SECRET = el mismo valor de CLIENTES_WRITE_SECRET de Apps Script.
-OPENAI_MODEL = gpt-6-luna (opcional, verificable según acceso de tu cuenta OpenAI).
+CUSTOMER_PRIVACY_APPROVED = true SOLO tras validar responsable legal, política y permisos de Sheets.
+OPENAI_MODEL = gpt-6-luna (opcional, según acceso de tu cuenta OpenAI).
 
 Asegúrate de que la cuenta OpenAI API tenga facturación y permisos para el modelo.
 Haz un Redeploy en Vercel después de guardar variables.
@@ -55,13 +58,16 @@ No uses el mismo secreto de OpenAI para CLIENTES_SCRIPT_SECRET.
 
 ## 4. Validar antes de comunicar el lanzamiento
 
-- Abre /api/assistant-status. Debe informar available:true solo cuando los
-  tres secretos relevantes estén presentes (no garantiza credenciales correctas).
+- Abre /api/assistant-status. Debe informar available:true con OPENAI_API_KEY.
+  registrationAvailable será true únicamente con script de escritura, secreto
+  y CUSTOMER_PRIVACY_APPROVED=true. Esto no verifica credenciales por sí solo.
 - Abre la tienda; verifica que aparece "Asesora con IA".
 - Solicita una prenda por ocasión, talla y presupuesto; verifica que devuelve
   exclusivamente productos existentes en Google Sheets.
 - Selecciona una tarjeta, elige talla y agrégala al carrito existente.
-- Usa "Ya elegí" y confirma que puedes continuar SIN registro a WhatsApp.
+- Con productos en el carrito, escribe «quiero comprar» y confirma que aparece
+  la acción contextual para continuar a WhatsApp, sin registro mientras
+  registrationAvailable=false. No debe abrirse WhatsApp sin un clic.
 - En modo de prueba, con un número bajo tu control y consentimiento informado,
   registra un contacto con autorización necesaria y comercial opcional.
 - Verifica que llega a la hoja Clientes sin repetirse en un segundo registro;
@@ -72,6 +78,19 @@ No uses el mismo secreto de OpenAI para CLIENTES_SCRIPT_SECRET.
   legal responsable del negocio antes de aceptar clientes reales.
 - Revisa en móviles y navegadores la apertura/cierre del chat,
   popup de Halloween, carrito y WhatsApp.
+
+## Optimización web y móvil
+
+- El widget es visible en producción con OpenAI configurado, sin exponer la clave.
+- En móviles ocupa la altura útil de la pantalla (dvh), respeta márgenes seguros
+  para dispositivos con notch y usa fuente de 16px en el campo de texto para evitar zoom en iOS.
+- Las acciones tienen altura táctil >=44px, el chat tiene scroll propio
+  y los botones de checkout solo aparecen cuando existe intención clara.
+- Seguimientos comerciales contextualizados a 40s y 80s, máximo 4 por visita,
+  pausados mientras se escribe o al dejar la pestaña.
+- Antes de anunciar funcionamiento completo, validar POST reales con OpenAI y
+  el recorrido móvil en un navegador autenticado. Una verificación de GET
+  solo valida despliegue, no una respuesta de IA.
 
 ## Seguridad y restricciones
 

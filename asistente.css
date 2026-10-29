@@ -23,15 +23,11 @@
 .orq-chat-product-info button{font-size:10px;color:white;background:#40293e;border:0;border-radius:99px;padding:8px 9px;cursor:pointer;text-align:center}
 .orq-chat-product-info button:hover{background:#7c5275}
 .orq-chat-footer{padding:11px 12px 13px;border-top:1px solid #f0e4ee;background:#fffafa}
-.orq-chat-status{font-size:9px;color:#746475;margin:0 0 8px;text-align:center}
-.orq-chat-suggestions{display:flex;gap:5px;overflow-x:auto;margin-bottom:9px;scrollbar-width:none}
-.orq-chat-suggestions button{background:#f5e4f0;border:1px solid #ecd0e6;border-radius:99px;white-space:nowrap;padding:7px 10px;color:#51344e;font-size:10px;cursor:pointer}
 .orq-chat-send-form{display:flex;align-items:center;gap:8px}
 .orq-chat-send-form input{flex:1;min-width:0;padding:10px 13px;background:#f8eef5;border-radius:99px;border:1px solid #e6d1e2;outline:none;color:#312331;font-size:12px}
 .orq-chat-send-form input:focus{border-color:#b684b7}
 .orq-chat-send-form button{flex:0 0 35px;height:35px;width:35px;border:0;border-radius:50%;background:#503047;color:white;cursor:pointer;font-size:17px}
 .orq-chat-send-form button:disabled{opacity:.45;cursor:wait}
-.orq-chat-checkout{margin-top:8px;padding:10px 12px;border:1px solid #c5a0c5;border-radius:99px;background:white;color:#43243f;width:100%;font-size:11px;font-weight:600;cursor:pointer}
 .orq-lead-form{display:flex;flex-direction:column;gap:8px;padding:13px;background:#fff5fa;border-top:1px solid #e6cde0;max-height:285px;overflow:auto}
 .orq-lead-form strong{font-size:13px}
 .orq-lead-form>p{font-size:10px;color:#776274;margin:0 0 4px}

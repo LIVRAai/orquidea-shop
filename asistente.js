@@ -14,9 +14,9 @@
     .catch(()=>{});
   const panel=$('orqAssistantPanel'),launch=$('orqAssistantLaunch');
   const messages=$('orqAssistantMessages'),input=$('orqAssistantInput');
-  const send=$('orqAssistantSend'),status=$('orqAssistantStatus'),form=$('orqAssistantForm');
-  const lead=$('orqLeadForm'),checkoutButton=$('orqAssistantCheckout'),guest=$('orqGuestCheckout');
-  let history=[],busy=false,lastRecommendation=[],leadName='';
+  const send=$('orqAssistantSend'),form=$('orqAssistantForm');
+  const lead=$('orqLeadForm'),guest=$('orqGuestCheckout');
+  let history=[],busy=false,leadName='';
   const safeText=x=>String(x||'').trim().slice(0,700);
   const currency=n=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n);
   const getCart=()=>typeof cart!=='undefined'&&Array.isArray(cart)?cart:[];
@@ -64,7 +64,6 @@
     busy=true;send.disabled=true;input.disabled=true;
     textMessage(value,'user');input.value='';
     const loading=textMessage('Estoy revisando nuestra colección…');
-    status.textContent='Buscando opciones en el catálogo';
     try{
       const response=await fetch('/api/assistant',{method:'POST',
         headers:{'Content-Type':'application/json'},
@@ -74,7 +73,6 @@
       if(!response.ok){textMessage(body.error||'No pude responder por el momento.');return;}
       textMessage(body.reply);
       showProducts(body.recommendations);
-      lastRecommendation=body.recommendations||[];
       history.push({role:'user',content:value},{role:'assistant',content:safeText(body.reply)});
       history=history.slice(-12);
       if(body.ready_to_checkout){
@@ -85,19 +83,16 @@
       loading.remove();textMessage('No tengo conexión en este momento. Puedes continuar por WhatsApp.');
     }finally{
       busy=false;send.disabled=false;input.disabled=false;
-      status.textContent='Catálogo real · Pago por WhatsApp';
       scroll();
     }
   }
   form.addEventListener('submit',e=>{e.preventDefault();ask(input.value);});
-  document.querySelectorAll('[data-orq-quick]').forEach(b=>b.addEventListener('click',()=>{openChat();ask(b.dataset.orqQuick);}));
   function showLead(){
     if(!hasCart()){textMessage('Primero elige el producto y la talla para continuar.');return;}
     lead.hidden=false;
     $('orqLeadName').focus({preventScroll:true});
     lead.scrollIntoView({block:'nearest',behavior:'smooth'});
   }
-  checkoutButton.addEventListener('click',showLead);
   function checkoutURL(){
     const items=getCart();
     if(!items.length)return null;

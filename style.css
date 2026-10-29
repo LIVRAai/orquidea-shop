@@ -37,3 +37,80 @@
 @keyframes welcomeOrbitIn{to{opacity:1;transform:scale(1) rotate(0)}}@keyframes welcomeCopyIn{to{opacity:1;transform:none}}@keyframes welcomeFloatA{to{transform:translate(50px,35px) scale(1.08)}}@keyframes welcomeFloatB{to{transform:translate(-45px,-28px) scale(.94)}}@keyframes welcomePetal{0%,100%{filter:saturate(.92) brightness(1);margin-top:0}50%{filter:saturate(1.08) brightness(1.03);margin-top:-5px}}
 @media(max-width:720px){.welcome-overlay{padding:12px}.welcome-overlay .welcome-card{width:100%;min-height:0;padding:58px 22px 38px;grid-template-columns:1fr;gap:25px;border-radius:30px 30px 86px 30px;text-align:center}.welcome-orbit{width:165px;height:165px}.welcome-orbit:before{inset:18px}.welcome-orbit:after{inset:38px}.welcome-core{width:58px;height:58px;font-size:30px}.welcome-petal{width:48px;height:72px;transform-origin:50% 81px}.welcome-petal.p1{transform:translateY(-68px)}.welcome-petal.p2{transform:rotate(90deg) translateY(-68px)}.welcome-petal.p3{transform:rotate(180deg) translateY(-68px)}.welcome-petal.p4{transform:rotate(270deg) translateY(-68px)}.welcome-copy h2{font-size:54px}.welcome-value,.welcome-sub{margin-left:auto;margin-right:auto}.welcome-overlay .welcome-actions{flex-direction:column}.welcome-primary,.welcome-secondary{width:100%;padding:14px 18px}.welcome-signature{display:none}.welcome-overlay .welcome-close{right:14px;top:14px}.welcome-glow-a{width:320px;height:320px}.welcome-glow-b{width:280px;height:280px}}
 @media(prefers-reduced-motion:reduce){.welcome-glow,.welcome-petal{animation:none!important}.welcome-overlay .welcome-card,.welcome-orbit,.welcome-kicker,.welcome-copy h2,.welcome-value,.welcome-sub,.welcome-overlay .welcome-actions{animation:none!important;transition:none!important;opacity:1!important;transform:none!important}}
+
+/* Boutique mobile refinement: stronger product hierarchy without changing catalog logic. */
+@media(max-width:650px){
+  .nav{padding:0 14px;box-shadow:0 9px 23px rgba(49,35,49,.11)}
+  .brand b{font-size:17px}
+  .brand small{font-size:8px;letter-spacing:.25em}
+  .cart-trigger{min-height:43px;font-size:11px;padding:8px 12px;gap:8px}
+  .section.catalog{padding-top:48px}
+  .section .head{margin-bottom:20px}
+  .head>p{font-size:12px;line-height:1.55}
+  .toolbar{
+    margin-bottom:18px;
+    padding:7px;
+    border-radius:20px;
+    gap:8px;
+    border-color:#ebd8e9;
+    box-shadow:0 6px 17px rgba(49,35,49,.055);
+    background:#fffafe;
+  }
+  .tabs{gap:5px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  .tab{
+    flex:0 0 auto;scroll-snap-align:start;
+    min-height:38px;padding:9px 13px;
+    border:1px solid transparent;
+    border-radius:999px;
+    color:#6a586a;
+    font-size:11px;
+    font-weight:500;
+  }
+  .tab.on{
+    background:#f0dbee;
+    color:#50334e;
+    border-color:#e8cce6;
+    font-weight:600;
+  }
+  .search{border-radius:14px;min-height:42px;padding:0 13px}
+  .search input{min-height:42px;padding:9px 0;font-size:14px}
+  .count{font-size:11px}
+  .count b{font-size:24px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:17px 10px}
+  .pc{
+    min-width:0;
+    border:1px solid rgba(94,58,96,.11);
+    border-radius:20px;
+    overflow:hidden;
+    background:#fffafd;
+    box-shadow:0 5px 18px rgba(49,35,49,.05);
+    transition:transform .2s ease,box-shadow .2s ease;
+  }
+  .pc:active{transform:scale(.985)}
+  .pi{aspect-ratio:.82;border-radius:17px 17px 9px 9px;box-shadow:none}
+  .pi img{display:block}
+  .tag{font-size:9px;padding:6px 9px;left:8px;top:8px}
+  .pm{display:block;padding:11px 11px 13px;min-height:83px}
+  .pm h3{
+    font-size:13px;font-weight:600;line-height:1.35;
+    overflow-wrap:anywhere;
+  }
+  .pm p{font-size:10.5px;line-height:1.45;margin-top:4px}
+  .pm .price{
+    display:block;margin-top:8px;
+    font:600 14px/1.2 'DM Sans',sans-serif;
+    color:#754874;white-space:normal;
+  }
+  .more button{min-height:44px;font-size:11px}
+  .fc{border-radius:22px}
+  .fo h3{font-size:23px}
+  .cta p:not(.ey){font-size:12px;line-height:1.55}
+}
+@media(max-width:355px){
+  .tab{font-size:10.5px;padding:8px 11px}
+  .pm{padding:9px 8px 11px}
+  .pm h3{font-size:12px}
+  .pm .price{font-size:13px}
+  .brand b{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){.pc{transition:none}}

@@ -4,20 +4,23 @@
   const $=id=>document.getElementById(id);
   const root=$('orqAssistant');
   if(!root)return;
-  // Do not expose an unfinished checkout experience to public visitors.
-  // A preview query parameter permits a visual inspection without credentials.
+  // Render only when the server has an OpenAI credential.
+  // Customer capture is independent and requires secure Google Sheets writing.
   root.hidden=true;
+  let registrationAvailable=false;
   const visualPreview=new URLSearchParams(window.location.search).get('previewAsesora')==='1';
   if(visualPreview)root.hidden=false;
   fetch('/api/assistant-status',{cache:'no-store'}).then(r=>r.ok?r.json():null)
-    .then(s=>{if(s?.available)root.hidden=false;})
-    .catch(()=>{});
+    .then(capabilities=>{
+      if(capabilities?.available)root.hidden=false;
+      registrationAvailable=capabilities?.registrationAvailable===true;
+    }).catch(()=>{});
   const panel=$('orqAssistantPanel'),launch=$('orqAssistantLaunch');
   const messages=$('orqAssistantMessages'),input=$('orqAssistantInput');
   const send=$('orqAssistantSend'),form=$('orqAssistantForm');
   const lead=$('orqLeadForm'),guest=$('orqGuestCheckout');
   let history=[],busy=false,leadName='';
-  let suggestedProducts=[],userTurns=0,assistantHealthy=true;
+  let suggestedProducts=[],userTurns=0,assistantHealthy=true,checkoutPromptActive=false;
   let followUpTimer=null,followUpStep=0,totalFollowUps=0;
   const FIRST_FOLLOW_UP_MS=40000;
   const SECOND_FOLLOW_UP_MS=80000;
@@ -42,7 +45,7 @@
   }
   function canFollowUp(){
     return !root.hidden&&!panel.hidden&&document.visibilityState==='visible'
-      &&!busy&&lead.hidden&&!input.value.trim()&&assistantHealthy
+      &&!busy&&lead.hidden&&!checkoutPromptActive&&!input.value.trim()&&assistantHealthy
       &&followUpStep<2&&totalFollowUps<MAX_FOLLOW_UPS_PER_VISIT;
   }
   function followUpText(){
@@ -88,13 +91,16 @@
     scheduleFollowUp();
   }
   function openChat(){
-    panel.hidden=false;launch.setAttribute('aria-expanded','true');
+    panel.hidden=false;root.classList.add('is-open');
+    launch.setAttribute('aria-expanded','true');
     input.focus({preventScroll:true});
     restartFollowUp();
   }
   function closeChat(){
     stopFollowUp();
-    panel.hidden=true;launch.setAttribute('aria-expanded','false');
+    panel.hidden=true;root.classList.remove('is-open');
+    launch.setAttribute('aria-expanded','false');
+    launch.focus({preventScroll:true});
   }
   launch.addEventListener('click',()=>panel.hidden?openChat():closeChat());
   $('orqAssistantClose').addEventListener('click',closeChat);
@@ -133,7 +139,10 @@
     try{
       const response=await fetch('/api/assistant',{method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({message:value,history:history.slice(-8)})});
+        body:JSON.stringify({
+          message:value,history:history.slice(-8),
+          cart:getCart().slice(0,10).map(item=>({nombre:item.n,talla:item.size,cantidad:item.qty}))
+        })});
       const body=await response.json().catch(()=>({}));
       loading.remove();
       if(!response.ok){
@@ -171,8 +180,29 @@
   });
   window.addEventListener('pagehide',stopFollowUp);
   function showLead(){
-    if(!hasCart()){textMessage('Primero elige el producto y la talla para continuar.');return;}
+    if(!hasCart()){
+      textMessage('Primero elige el producto y la talla para continuar.');
+      return;
+    }
     stopFollowUp();
+    if(!registrationAvailable){
+      // Do not ask for personal data when Google Sheets storage is unavailable.
+      if(checkoutPromptActive)return;
+      checkoutPromptActive=true;
+      textMessage('¡Ya podemos continuar! 💜 Preparé tu selección para que confirmes disponibilidad, envío y pago con Orquídea Shop por WhatsApp.');
+      const row=document.createElement('div');
+      row.className='orq-chat-checkout-inline';
+      const button=document.createElement('button');
+      button.type='button';
+      button.className='orq-chat-checkout-action';
+      button.textContent='Continuar pedido por WhatsApp ↗';
+      button.addEventListener('click',redirectCheckout);
+      row.appendChild(button);
+      messages.appendChild(row);
+      scroll();
+      return;
+    }
+    checkoutPromptActive=true;
     lead.hidden=false;
     $('orqLeadName').focus({preventScroll:true});
     lead.scrollIntoView({block:'nearest',behavior:'smooth'});
@@ -188,8 +218,9 @@
   }
   function redirectCheckout(){
     const url=checkoutURL();
-    if(url)window.location.assign(url);
-    else textMessage('Primero agrega un producto al carrito.');
+    if(!url){textMessage('Primero agrega un producto al carrito.');return;}
+    // Explicit click only; on mobile this opens the existing WhatsApp channel.
+    window.location.assign(url);
   }
   guest.addEventListener('click',()=>{leadName='';redirectCheckout();});
   lead.addEventListener('submit',async e=>{

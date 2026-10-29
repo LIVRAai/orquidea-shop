@@ -52,3 +52,5 @@
  .orq-lead-form{max-height:38dvh}
 }
 @media(prefers-reduced-motion:reduce){.orq-chat-launch:hover{transform:none}}
+
+.orq-assistant[hidden]{display:none!important}

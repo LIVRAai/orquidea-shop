@@ -8,11 +8,18 @@
   // Customer capture is independent and requires secure Google Sheets writing.
   root.hidden=true;
   let registrationAvailable=false;
-  const visualPreview=new URLSearchParams(window.location.search).get('previewAsesora')==='1';
+  const params=new URLSearchParams(window.location.search);
+  const visualPreview=params.get('previewAsesora')==='1';
+  const directChat=params.get('chat')==='1';
   if(visualPreview)root.hidden=false;
   fetch('/api/assistant-status',{cache:'no-store'}).then(r=>r.ok?r.json():null)
     .then(capabilities=>{
-      if(capabilities?.available)root.hidden=false;
+      if(capabilities?.available){
+        root.hidden=false;
+        // The shared WhatsApp link opens the assistant immediately.
+        // Avoid automatic keyboard focus on iPhone until the shopper taps.
+        if(directChat)openChat(false);
+      }
       registrationAvailable=capabilities?.registrationAvailable===true;
     }).catch(()=>{});
   const panel=$('orqAssistantPanel'),launch=$('orqAssistantLaunch'),expand=$('orqAssistantExpand');
@@ -92,10 +99,11 @@
     followUpStep=0;
     scheduleFollowUp();
   }
-  function openChat(){
+  function openChat(focusInput=true){
+    if(!panel.hidden)return;
     panel.hidden=false;root.classList.add('is-open');
     launch.setAttribute('aria-expanded','true');
-    input.focus({preventScroll:true});
+    if(focusInput)input.focus({preventScroll:true});
     restartFollowUp();
   }
   function closeChat(){
